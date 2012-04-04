@@ -1,0 +1,21 @@
+{
+    "name":         "mubsub",
+    "version":      "0.0.1",
+    "description":  "Pub/sub for Node.js and MongoDB",
+    "homepage":     "http://github.com/scttnlsn/mubsub",
+    "author":       "Scott Nelson <scottbnel@gmail.com>",
+    "main":         "./lib/index",
+    
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/scttnlsn/mubsub.git"
+    },
+    
+    "dependencies": {
+        "mongodb": ">= 0.9.9"
+    },
+    
+    "devDependencies": {
+        "mocha": ">= 1.0.0"
+    }
+}
