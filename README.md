@@ -33,7 +33,7 @@ Usage
 A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection or/and max number of documents in the collection when creating a channel:
 
 ```javascript
-var channel = mubsub.channel('foo', { size: 100000, max: 100000 });
+var channel = mubsub.channel('foo', { size: 100000, max: 500 });
 ```
 
 ### Subscribe ###
