@@ -22,17 +22,18 @@ channel.subscribe({ foo: 'baz' }, function(err, doc) {
 
 channel.publish({ foo: 'bar' });
 channel.publish({ foo: 'baz' });
+
 ```
-    
+
 Usage
 -----
 
 ### Channels ###
 
-A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection when creating a channel:
+A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection or/and max number of documents in the collection when creating a channel:
 
 ```javascript
-var channel = mubsub.channel('foo', { size: 100000 });
+var channel = mubsub.channel('foo', { size: 100000, max: 100000 });
 ```
 
 ### Subscribe ###
@@ -54,6 +55,14 @@ channel.publish(doc, callback);
 ```
 
 Publishing a document simply inserts the document into the channel's capped collection.  Note that Mubsub will remove any specified document `_id` as the natural ordering of `ObjectId`s is used to ensure subscribers do not receive notifications of documents inserted in the past.  Callback is optional.
+
+### Disconnect ###
+
+Disconnect will happen as soon as connection gets opened.
+
+```javascript
+mubsub.disconnect();
+```
 
 Install
 -------
