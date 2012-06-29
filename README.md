@@ -58,11 +58,11 @@ Publishing a document simply inserts the document into the channel's capped coll
 
 ### Disconnect ###
 
-Disconnect will happen as soon as connection gets opened.
-
 ```javascript
 mubsub.disconnect();
 ```
+
+Closes the MongoDB connection.
 
 Install
 -------
