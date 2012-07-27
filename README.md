@@ -13,11 +13,11 @@ var channel = mubsub.channel('test');
 mubsub.connect('mongodb://localhost:27017/mubsub');
 
 channel.subscribe({ foo: 'bar' }, function(doc) {
-    console.log('received bar');
+    console.log(doc.foo); // => 'bar'
 });
 
 channel.subscribe({ foo: 'baz' }, function(doc) {
-    console.log('received baz');
+    console.log(doc.foo); // => 'baz'
 });
 
 channel.publish({ foo: 'bar' });
