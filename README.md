@@ -12,11 +12,11 @@ var channel = mubsub.channel('test');
 
 mubsub.connect('mongodb://localhost:27017/mubsub');
 
-channel.subscribe({ foo: 'bar' }, function(err, doc) {
+channel.subscribe({ foo: 'bar' }, function(doc) {
     console.log('received bar');
 });
 
-channel.subscribe({ foo: 'baz' }, function(err, doc) {
+channel.subscribe({ foo: 'baz' }, function(doc) {
     console.log('received baz');
 });
 
@@ -63,6 +63,14 @@ mubsub.disconnect();
 ```
 
 Closes the MongoDB connection.
+
+### Events ###
+
+```javascript
+channel.on('error', function(err) {
+    console.log(err);
+});
+```
 
 Install
 -------
