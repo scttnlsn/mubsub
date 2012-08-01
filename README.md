@@ -8,9 +8,10 @@ Example
 
 ```javascript
 var mubsub = require('mubsub');
-var channel = mubsub.channel('test');
 
-mubsub.connect('mongodb://localhost:27017/mubsub');
+mubsub.connect('mongodb://localhost:27017/mubsub_example');
+
+var channel = mubsub.channel('test');
 
 channel.subscribe({ foo: 'bar' }, function(doc) {
     console.log(doc.foo); // => 'bar'
