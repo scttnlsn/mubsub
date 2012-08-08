@@ -1,13 +1,12 @@
 var mubsub = require('../lib/index');
 
-mubsub.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_example');
-
-var channel = mubsub.channel('example');
+var client = mubsub(process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_example');
+var channel = client.channel('example');
 
 channel.subscribe(function(doc) {
     console.log(doc);
 });
 
 channel.on('error', function(err) {
-    throw err;
+    console.log(err);
 });
