@@ -1,4 +1,5 @@
 var assert = require('assert');
+var sinon = require('sinon');
 var mubsub = require('../lib/index');
 
 describe('Channel', function() {
@@ -61,5 +62,20 @@ describe('Channel', function() {
         for (var i = 0; i < bar; i++) channel.publish({ foo: 'bar' });
         for (var i = 0; i < baz; i++) channel.publish({ foo: 'baz' });
         for (var i = 0; i < qux; i++) channel.publish({ foo: 'qux' });
+    });
+
+    it('emits any errors', function(done) {
+        var error = new Error();
+
+        var stub = sinon.stub(channel.collection, 'then').yields(error);
+
+        channel.on('error', function(err) {
+            assert.ok(err);
+            assert.equal(err, error);
+            stub.restore();
+            done();
+        });
+
+        channel.subscribe(function() {});
     });
 });

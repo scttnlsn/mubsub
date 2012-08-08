@@ -22,6 +22,7 @@
     },
 
     "devDependencies": {
-        "mocha": ">= 1.0.0"
+        "mocha": ">= 1.0.0",
+        "sinon": ">= 1.4.2"
     }
 }
