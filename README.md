@@ -9,9 +9,8 @@ Example
 ```javascript
 var mubsub = require('mubsub');
 
-mubsub.connect('mongodb://localhost:27017/mubsub_example');
-
-var channel = mubsub.channel('test');
+var client = mubsub('mongodb://localhost:27017/mubsub_example');
+var channel = client.channel('test');
 
 channel.subscribe({ foo: 'bar' }, function(doc) {
     console.log(doc.foo); // => 'bar'
@@ -34,7 +33,7 @@ Usage
 A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection or/and max number of documents in the collection when creating a channel:
 
 ```javascript
-var channel = mubsub.channel('foo', { size: 100000, max: 500 });
+var channel = client.channel('foo', { size: 100000, max: 500 });
 ```
 
 ### Subscribe ###
@@ -57,10 +56,10 @@ channel.publish(doc, callback);
 
 Publishing a document simply inserts the document into the channel's capped collection.  Note that Mubsub will remove any specified document `_id` as the natural ordering of `ObjectId`s is used to ensure subscribers do not receive notifications of documents inserted in the past.  Callback is optional.
 
-### Disconnect ###
+### Close ###
 
 ```javascript
-mubsub.disconnect();
+client.close();
 ```
 
 Closes the MongoDB connection.
