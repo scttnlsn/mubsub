@@ -11,6 +11,7 @@ describe('Channel', function() {
     });
 
     it('calls subscribed callbacks that match given query', function(done) {
+        var subscriptions = [];
         var counts = { all: 0, bar: 0, baz: 0, both: 0 };
 
         var random = function() {
@@ -22,42 +23,48 @@ describe('Channel', function() {
         var qux = random();
 
         var end = function() {
-            counts.all === bar + baz + qux &&
-            counts.bar === bar &&
-            counts.baz === baz &&
-            counts.both === bar + baz &&
-            done();
+            var exit = counts.all === bar + baz + qux &&
+                counts.bar === bar &&
+                counts.baz === baz &&
+                counts.both === bar + baz;
+
+            if (exit) {
+                subscriptions.forEach(function(subscription) {
+                    subscription.unsubscribe();
+                });
+                done();
+            }
         };
 
         channel.once('error', done);
 
         // Match all
-        channel.subscribe({}, function(doc) {
+        subscriptions.push(channel.subscribe({}, function(doc) {
             assert.ok(doc.foo);
             counts.all++;
             end();
-        });
+        }));
 
         // Match `bar`
-        channel.subscribe({ foo: 'bar' }, function(doc) {
+        subscriptions.push(channel.subscribe({ foo: 'bar' }, function(doc) {
             assert.equal(doc.foo, 'bar');
             counts.bar++;
             end();
-        });
+        }));
 
         // Match `baz`
-        channel.subscribe({ foo: 'baz' }, function(doc) {
+        subscriptions.push(channel.subscribe({ foo: 'baz' }, function(doc) {
             assert.equal(doc.foo, 'baz');
             counts.baz++;
             end();
-        });
+        }));
 
         // Match `bar` or `baz`
-        channel.subscribe({ '$or': [{ foo: 'bar'}, { foo: 'baz' }]}, function(doc) {
+        subscriptions.push(channel.subscribe({ '$or': [{ foo: 'bar'}, { foo: 'baz' }]}, function(doc) {
             assert.ok(doc.foo === 'bar' || doc.foo === 'baz');
             counts.both++;
             end();
-        });
+        }));
 
         for (var i = 0; i < bar; i++) channel.publish({ foo: 'bar' });
         for (var i = 0; i < baz; i++) channel.publish({ foo: 'baz' });
@@ -77,5 +84,31 @@ describe('Channel', function() {
         });
 
         channel.subscribe(function() {});
+    });
+
+    it('halts subscribe loop when disconnected', function(done) {
+        // TODO: Figure out a better way to test this
+        
+        var count = 0;
+
+        var subscription = channel.subscribe(function() {
+            count++;
+
+            if (count === 2) next();
+            if (count > 2) done(new Error('Subscription should be ended'));
+        });
+
+        channel.publish({});
+        channel.publish({});
+
+        function next() {
+            var stub = sinon.stub(client, 'disconnected').returns(true);
+            
+            channel.publish({}, function() {
+                subscription.unsubscribe();
+                stub.restore();
+                setTimeout(done, 1000);
+            });
+        };
     });
 });
