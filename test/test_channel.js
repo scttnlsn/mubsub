@@ -6,7 +6,8 @@ describe('Channel', function() {
     var channel, client;
 
     beforeEach(function() {
-        client = mubsub(process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_tests');
+        client = mubsub(process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_tests',
+                       {safe: true});
         channel = client.channel('tests');
     });
 
