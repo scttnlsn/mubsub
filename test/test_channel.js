@@ -19,9 +19,9 @@ describe('Channel', function() {
             return Math.floor(Math.random() * 100 + 1);
         };
 
-        var bar = random();
-        var baz = random();
-        var qux = random();
+        var bar = random() %30;
+        var baz = random() %30;
+        var qux = random() %30;
 
         var end = function() {
             var exit = counts.all === bar + baz + qux &&
