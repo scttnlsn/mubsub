@@ -27,6 +27,17 @@ channel.publish({ foo: 'baz' });
 
 Usage
 -----
+### Create a client
+
+```javascript
+var mubsub = require('mubsub');
+
+// Using uri
+var client = mubsub('mongodb://localhost:27017/mubsub_example');
+
+// Pass mongodb driver `Db` instance directly.
+var client = mubsub(new Db(...));
+```
 
 ### Channels ###
 
@@ -71,6 +82,22 @@ channel.on('error', function(err) {
     console.log(err);
 });
 ```
+
+### Caveats
+
+1. Ensure using poolSize > 1. Waiting for data will block 1 connection.
+
+```javascript
+var client = mubsub('mongodb://localhost:27017/mubsub_example?poolSize=5');
+```
+
+2. Ensure setting auto_reconnect=true
+
+```javascript
+var client = mubsub('mongodb://localhost:27017/mubsub_example?auto_reconnect=true');
+```
+
+3. Avoid making lots of subscriptions. Use `channel.subscribe` less times than defined poolSize. Also at least one connection should be always free for publishing.
 
 Install
 -------
