@@ -6,7 +6,8 @@ describe('Channel', function() {
     var channel, client;
 
     beforeEach(function() {
-        client = mubsub(process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_tests');
+        client = mubsub(process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_tests',
+                       {safe: true});
         channel = client.channel('tests');
     });
 
@@ -18,9 +19,9 @@ describe('Channel', function() {
             return Math.floor(Math.random() * 100 + 1);
         };
 
-        var bar = random();
-        var baz = random();
-        var qux = random();
+        var bar = random() %30;
+        var baz = random() %30;
+        var qux = random() %30;
 
         var end = function() {
             var exit = counts.all === bar + baz + qux &&
