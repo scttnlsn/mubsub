@@ -1,6 +1,6 @@
 {
     "name":         "mubsub",
-    "version":      "0.2.1",
+    "version":      "0.2.2",
     "description":  "Pub/sub for Node.js and MongoDB",
     "homepage":     "http://github.com/scttnlsn/mubsub",
     "author":       "Scott Nelson <scottbnel@gmail.com>",
