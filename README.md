@@ -1,10 +1,8 @@
-mubsub
-======
+## mubsub
 
 Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's capped collections and tailable cursors to notify subscribers of inserted documents that match a given query.
 
-Example
--------
+## Example
 
 ```javascript
 var mubsub = require('mubsub');
@@ -12,38 +10,27 @@ var mubsub = require('mubsub');
 var client = mubsub('mongodb://localhost:27017/mubsub_example');
 var channel = client.channel('test');
 
-channel.subscribe({ foo: 'bar' }, function(doc) {
-    console.log(doc.foo); // => 'bar'
+client.on('error', console.error);
+channel.on('error', console.error);
+
+channel.subscribe('bar', function(data) {
+    console.log(data.foo); // => 'bar'
 });
 
-channel.subscribe({ foo: 'baz' }, function(doc) {
+channel.subscribe('baz', function(doc) {
     console.log(doc.foo); // => 'baz'
 });
 
-channel.publish({ foo: 'bar' });
-channel.publish({ foo: 'baz' });
+channel.publish('bar', { foo: 'bar' });
+channel.publish('baz', { foo: 'baz' });
 
 ```
 
-### Caveats
+## Usage
 
-1. Ensure using poolSize > 1. Waiting for data will block 1 connection per subscription.
-
-    ```javascript
-    var client = mubsub('mongodb://localhost:27017/mubsub_example?poolSize=5');
-    ```
-
-2. Ensure setting auto_reconnect=true, default is false.
-
-    ```javascript
-    var client = mubsub('mongodb://localhost:27017/mubsub_example?auto_reconnect=true');
-    ```
-
-3. Avoid making lots of subscriptions. Use `channel.subscribe` less times than defined poolSize. Also at least one connection should be always free for publishing.
-
-Usage
------
 ### Create a client
+
+You can pass a Db instance of uri string. For more information about uri format visit http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html
 
 ```javascript
 var mubsub = require('mubsub');
@@ -55,7 +42,7 @@ var client = mubsub('mongodb://localhost:27017/mubsub_example');
 var client = mubsub(new Db(...));
 ```
 
-### Channels ###
+### Channels
 
 A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection or/and max number of documents in the collection when creating a channel:
 
@@ -63,27 +50,27 @@ A channel maps one-to-one with a capped collection (Mubsub will create these if 
 var channel = client.channel('foo', { size: 100000, max: 500 });
 ```
 
-### Subscribe ###
+### Subscribe
 
 ```javascript
-var subscription = channel.subscribe(query, callback);
+var subscription = channel.subscribe([event], callback);
 ```
 
-Subscriptions register a callback to be called whenever a document matching the specified query is inserted (published) into the collection (channel).  You can omit the query to match all inserted documents.  To later unsubscribe a particular callback, call `unsubscribe` on the returned subscription object:
+Subscriptions register a callback to be called whenever a document matching the specified event is inserted (published) into the collection (channel).  You can omit the event to match all inserted documents. To later unsubscribe a particular callback, call `unsubscribe` on the returned subscription object:
 
 ```javascript
 subscription.unsubscribe();
 ```
 
-### Publish ###
+### Publish
 
 ```javascript
-channel.publish(doc, callback);
+channel.publish(event, obj, [callback]);
 ```
 
-Publishing a document simply inserts the document into the channel's capped collection.  Note that Mubsub will remove any specified document `_id` as the natural ordering of `ObjectId`s is used to ensure subscribers do not receive notifications of documents inserted in the past.  Callback is optional.
+Publishing a document simply inserts the document into the channel's capped collection. Callback is optional.
 
-### Close ###
+### Close
 
 ```javascript
 client.close();
@@ -91,14 +78,15 @@ client.close();
 
 Closes the MongoDB connection.
 
-### Events ###
+### Events
 
 ```javascript
-channel.on('error', function(err) {
-    console.log(err);
-});
-```
 
+client.on('error', console.log);
+
+channel.on('error', console.log);
+
+```
 
 Install
 -------
