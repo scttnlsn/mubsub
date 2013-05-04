@@ -13,12 +13,12 @@ var channel = client.channel('test');
 client.on('error', console.error);
 channel.on('error', console.error);
 
-channel.subscribe('bar', function(data) {
-    console.log(data.foo); // => 'bar'
+channel.subscribe('bar', function(message) {
+    console.log(message.foo); // => 'bar'
 });
 
-channel.subscribe('baz', function(doc) {
-    console.log(doc.foo); // => 'baz'
+channel.subscribe('baz', function(message) {
+    console.log(message.foo); // => 'baz'
 });
 
 channel.publish('bar', { foo: 'bar' });
@@ -60,6 +60,22 @@ Subscriptions register a callback to be called whenever a document matching the 
 
 ```javascript
 subscription.unsubscribe();
+```
+
+### Listen to events
+
+Optionally you can use .on to listen to event. There are 2 events emitted: "message", "document" and subscribed message "myevent".
+
+```javascript
+
+    // Subscribe to any message
+    channel.on('message', console.log);
+
+    // Subscribe to some specicific event, like channel.subscribe
+    channel.on('myevent', console.log);
+
+    // Subscribe to document event to get the entire mongo document.
+    channel.on('document', console.log);
 ```
 
 ### Publish
