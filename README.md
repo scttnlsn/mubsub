@@ -1,6 +1,7 @@
 ## mubsub
 
-Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's capped collections and tailable cursors to notify subscribers of inserted documents that match a given query.
+Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's capped collections and tailable cursors to notify subscribers of inserted documents that match a given query. You should not create lots of channels, because mubsub will poll from the cursor position.
+
 
 ## Example
 
@@ -44,7 +45,7 @@ var client = mubsub(new Db(...));
 
 ### Channels
 
-A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection or/and max number of documents in the collection when creating a channel:
+A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection or/and max number of documents in the collection when creating a channel.
 
 ```javascript
 var channel = client.channel('foo', { size: 100000, max: 500 });
