@@ -8,7 +8,7 @@ Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's
 ```javascript
 var mubsub = require('mubsub');
 
-var client = mubsub('mongodb://localhost:27017/mubsub_example');
+var client = mubsub('mongodb://localhost:27017/mubsub_example', [options]);
 var channel = client.channel('test');
 
 client.on('error', console.error);
@@ -19,11 +19,11 @@ channel.subscribe('bar', function(message) {
 });
 
 channel.subscribe('baz', function(message) {
-    console.log(message.foo); // => 'baz'
+    console.log(message); // => 'baz'
 });
 
 channel.publish('bar', { foo: 'bar' });
-channel.publish('baz', { foo: 'baz' });
+channel.publish('baz', 'baz');
 
 ```
 
@@ -65,7 +65,7 @@ subscription.unsubscribe();
 
 ### Listen to events
 
-Optionally you can use .on to listen to event. There are 2 events emitted: "message", "document" and subscribed message "myevent".
+Optionally you can use .on to listen to event. There are 3 events emitted: "message", "document" and subscribed message "myevent".
 
 ```javascript
 
@@ -77,6 +77,13 @@ Optionally you can use .on to listen to event. There are 2 events emitted: "mess
 
     // Subscribe to document event to get the entire mongo document.
     channel.on('document', console.log);
+
+    // Connection errors
+    client.on('error', console.log);
+
+    // Channel errors
+    channel.on('error', console.log);
+
 ```
 
 ### Publish
@@ -95,23 +102,11 @@ client.close();
 
 Closes the MongoDB connection.
 
-### Events
-
-```javascript
-
-client.on('error', console.log);
-
-channel.on('error', console.log);
-
-```
-
-Install
--------
+## Install
 
     npm install mubsub
 
-Tests
------
+## Tests
 
     make test
 
