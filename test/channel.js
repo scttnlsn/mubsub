@@ -105,7 +105,7 @@ describe('Channel', function() {
         var channel = channel = client.channel('channel.bench', {size: 1024 * 1024 * 100});
 
         // Takes about 2 sec on mb air.
-        this.timeout(3000);
+        this.timeout(4000);
 
         var subscription = channel.subscribe('a', function(_data) {
             assert.deepEqual(_data, data);
