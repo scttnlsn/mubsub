@@ -8,7 +8,7 @@ Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's
 ```javascript
 var mubsub = require('mubsub');
 
-var client = mubsub('mongodb://localhost:27017/mubsub_example', [options]);
+var client = mubsub('mongodb://localhost:27017/mubsub_example');
 var channel = client.channel('test');
 
 client.on('error', console.error);
@@ -37,7 +37,7 @@ You can pass a Db instance of uri string. For more information about uri format 
 var mubsub = require('mubsub');
 
 // Using uri
-var client = mubsub('mongodb://localhost:27017/mubsub_example');
+var client = mubsub('mongodb://localhost:27017/mubsub_example', [options]);
 
 // Pass mongodb driver `Db` instance directly.
 var client = mubsub(new Db(...));
@@ -65,17 +65,17 @@ subscription.unsubscribe();
 
 ### Listen to events
 
-Optionally you can use .on to listen to event. There are 3 events emitted: "message", "document" and subscribed message "myevent".
+Following events will be emitted:
 
 ```javascript
-
-    // Subscribe to any message
-    channel.on('message', console.log);
 
     // Subscribe to some specicific event, like channel.subscribe
     channel.on('myevent', console.log);
 
-    // Subscribe to document event to get the entire mongo document.
+    // Subscribe to a "message"
+    channel.on('message', console.log);
+
+    // Subscribe to "document" event to get the entire mongo document.
     channel.on('document', console.log);
 
     // Connection errors
