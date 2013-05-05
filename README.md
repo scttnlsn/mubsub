@@ -62,6 +62,13 @@ Subscriptions register a callback to be called whenever a document matching the 
 ```javascript
 subscription.unsubscribe();
 ```
+### Publish
+
+```javascript
+channel.publish(event, obj, [callback]);
+```
+
+Publishing a document simply inserts the document into the channel's capped collection. Callback is optional.
 
 ### Listen to events
 
@@ -85,14 +92,6 @@ Following events will be emitted:
     channel.on('error', console.log);
 
 ```
-
-### Publish
-
-```javascript
-channel.publish(event, obj, [callback]);
-```
-
-Publishing a document simply inserts the document into the channel's capped collection. Callback is optional.
 
 ### Close
 
