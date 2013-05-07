@@ -85,6 +85,9 @@ Following events will be emitted:
     // Subscribe to "document" event to get the entire mongo document.
     channel.on('document', console.log);
 
+    // Mubsub is ready to receive new documents.
+    channel.on('ready', console.log);
+
     // Connection errors
     client.on('error', console.log);
 
