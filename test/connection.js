@@ -3,6 +3,14 @@ var mubsub = require('../lib/index');
 var uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_tests';
 
 describe('Connection', function() {
+    function clear(done) {
+        mubsub(uri).on('connect', function(db) {
+            db.dropDatabase(done);
+        });
+    }
+    beforeEach(clear);
+    after(clear);
+
     it('emits "error" event', function(done) {
         mubsub('mongodb://localhost:6666/mubsub_tests').on('error', function() {
             done();
@@ -10,7 +18,7 @@ describe('Connection', function() {
     });
 
     it('emits "connect" event', function(done) {
-        mubsub(uri).on('connect', function() {
+        mubsub(uri).on('connect', function(db) {
             done();
         });
     });
@@ -27,5 +35,4 @@ describe('Connection', function() {
 
         assert.equal(client.state, 'connecting');
     });
-
 });

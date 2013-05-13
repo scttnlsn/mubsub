@@ -4,8 +4,24 @@ var data = require('./fixtures/data');
 var uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_tests';
 
 describe('Channel', function() {
-    var client = mubsub(uri, {safe: true});
-    var channel = client.channel('channel');
+    var client, channel;
+
+    function clear(done) {
+        mubsub(uri).on('connect', function(db) {
+            if (client) client.close();
+            db.dropDatabase(done);
+        });
+    }
+
+    beforeEach(function(done) {
+        clear(function() {
+            client = mubsub(uri);
+            channel = client.channel('channel');
+            done();
+        });
+    });
+
+    after(clear);
 
     it('unsubscribes properly', function(done) {
         var amount = 0;
@@ -23,12 +39,11 @@ describe('Channel', function() {
         setTimeout(function() {
             assert.equal(amount, 1);
             done();
-        }, 1000);
+        }, 500);
     });
 
     it('unsubscribes if channel is closed', function(done) {
         var amount = 0;
-        var channel = client.channel('channel.close');
 
         var subscription = channel.subscribe('a', function(data) {
             assert.equal(data, 'a');
@@ -42,13 +57,11 @@ describe('Channel', function() {
         setTimeout(function() {
             assert.equal(amount, 1);
             done();
-        }, 300);
+        }, 500);
     });
 
     it('unsubscribes if client is closed', function(done) {
         var amount = 0;
-        var client = mubsub(uri, {safe: true});
-        var channel = client.channel('client.close');
 
         var subscription = channel.subscribe('a', function(data) {
             assert.equal(data, 'a');
@@ -62,7 +75,7 @@ describe('Channel', function() {
         setTimeout(function() {
             assert.equal(amount, 1);
             done();
-        }, 300);
+        }, 500);
     });
 
     it('can subscribe and publish different data', function(done) {
@@ -100,9 +113,9 @@ describe('Channel', function() {
     });
 
     it('gets lots of subscribed data fast enough', function(done) {
+        var channel = client.channel('channel.bench', {size: 1024 * 1024 * 100});
         var got = 0;
         var publish = 5000;
-        var channel = channel = client.channel('channel.bench', {size: 1024 * 1024 * 100});
 
         // Takes about 2 sec on mb air.
         this.timeout(4000);
