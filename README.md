@@ -31,7 +31,7 @@ channel.publish('baz', 'baz');
 
 ### Create a client
 
-You can pass a Db instance of uri string. For more information about uri format visit http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html
+You can pass a Db instance or a uri string. For more information about uri format visit http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html
 
 ```javascript
 var mubsub = require('mubsub');
