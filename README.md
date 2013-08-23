@@ -51,6 +51,13 @@ A channel maps one-to-one with a capped collection (Mubsub will create these if 
 var channel = client.channel('foo', { size: 100000, max: 500 });
 ```
 
+Options:
+
+ - `size` max size of the collection in bytes, default is 5mb
+ - `max` max amount of documents in the collection
+ - `retryInterval` time in ms to wait if no docs found, default is 200ms
+ - `recreate` recreate the tailable cursor on error, default is true
+
 ### Subscribe
 
 ```javascript
