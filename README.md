@@ -58,6 +58,9 @@ Options:
  - `retryInterval` time in ms to wait if no docs found, default is 200ms
  - `recreate` recreate the tailable cursor on error, default is true
 
+
+ **Don't remove collections with running publishers. Mongod can recreate the collection on insert automatically before mubsub will do it and without capped = true.**
+
 ### Subscribe
 
 ```javascript
@@ -122,3 +125,7 @@ Closes the MongoDB connection.
 You can optionally specify the MongoDB URI to be used for tests:
 
     MONGODB_URI=mongodb://localhost:27017/mubsub_tests make test
+
+## Projects using mubsub
+
+- [simpleio](https://github.com/kof/simpleio) Simple long polling based communication.
