@@ -2,8 +2,6 @@
 
 Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's capped collections and tailable cursors to notify subscribers of inserted documents that match a given query.
 
-**WARNING**: You should not create lots of channels because Mubsub will poll from the cursor position.
-
 ## Example
 
 ```javascript
@@ -32,7 +30,7 @@ channel.publish('baz', 'baz');
 
 ### Create a client
 
-You can pass a Db instance or a URI string. For more information about the URI format visit (http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html)[http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html]
+You can pass a Db instance or a URI string. For more information about the URI format visit [http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html](http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html)
 
 ```javascript
 var mubsub = require('mubsub');
@@ -48,6 +46,8 @@ var client = mubsub(new Db(...));
 
 A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection and/or the max number of documents in the collection when creating a channel.
 
+**WARNING**: You should not create lots of channels because Mubsub will poll from the cursor position.
+
 ```javascript
 var channel = client.channel('foo', { size: 100000, max: 500 });
 ```
@@ -60,7 +60,7 @@ Options:
  - `recreate` recreate the tailable cursor when an error occurs, default is true
 
 
- **WARNING**: Don't remove collections with running publishers. It's possible for `mongod` to recreate the collection on the next insert (before Mubsub has the chance to do so).  If this happens the collection will be recreated as a normal, uncapped collection.
+**WARNING**: Don't remove collections with running publishers. It's possible for `mongod` to recreate the collection on the next insert (before Mubsub has the chance to do so).  If this happens the collection will be recreated as a normal, uncapped collection.
 
 ### Subscribe
 
