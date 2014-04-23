@@ -4,9 +4,8 @@ var client = mubsub(process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub
 var channel = client.channel('example');
 
 channel.on('error', console.error);
-client.on('error', console.error)
+client.on('error', console.error);
 
-channel.subscribe('foo', function(message) {
+channel.subscribe('foo', function (message) {
     console.log(message);
 });
-

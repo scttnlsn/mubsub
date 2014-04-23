@@ -3,7 +3,7 @@
     "version":      "1.0.4",
     "description":  "Pub/sub for Node.js and MongoDB",
     "homepage":     "http://github.com/scttnlsn/mubsub",
-    "author":       "Scott Nelson <scottbnel@gmail.com>",
+    "author":       "Scott Nelson <scott@scttnlsn.com>",
     "main":         "./lib/index",
     "keywords":     ["mongodb", "pubsub", "pub", "sub", "capped collection"],
     "contributors": [

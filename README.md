@@ -1,7 +1,8 @@
 ## mubsub
 
-Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's capped collections and tailable cursors to notify subscribers of inserted documents that match a given query. You should not create lots of channels, because mubsub will poll from the cursor position.
+Mubsub is a pub/sub implementation for Node.js and MongoDB.  It utilizes Mongo's capped collections and tailable cursors to notify subscribers of inserted documents that match a given query.
 
+**WARNING**: You should not create lots of channels because Mubsub will poll from the cursor position.
 
 ## Example
 
@@ -14,11 +15,11 @@ var channel = client.channel('test');
 client.on('error', console.error);
 channel.on('error', console.error);
 
-channel.subscribe('bar', function(message) {
+channel.subscribe('bar', function (message) {
     console.log(message.foo); // => 'bar'
 });
 
-channel.subscribe('baz', function(message) {
+channel.subscribe('baz', function (message) {
     console.log(message); // => 'baz'
 });
 
@@ -31,21 +32,21 @@ channel.publish('baz', 'baz');
 
 ### Create a client
 
-You can pass a Db instance or a uri string. For more information about uri format visit http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html
+You can pass a Db instance or a URI string. For more information about the URI format visit (http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html)[http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html]
 
 ```javascript
 var mubsub = require('mubsub');
 
-// Using uri
+// Using a URI
 var client = mubsub('mongodb://localhost:27017/mubsub_example', [options]);
 
-// Pass mongodb driver `Db` instance directly.
+// Passing a MongoDB driver `Db` instance directly.
 var client = mubsub(new Db(...));
 ```
 
 ### Channels
 
-A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection or/and max number of documents in the collection when creating a channel.
+A channel maps one-to-one with a capped collection (Mubsub will create these if they do not already exist in the database).  Optionally specify the byte size of the collection and/or the max number of documents in the collection when creating a channel.
 
 ```javascript
 var channel = client.channel('foo', { size: 100000, max: 500 });
@@ -55,11 +56,11 @@ Options:
 
  - `size` max size of the collection in bytes, default is 5mb
  - `max` max amount of documents in the collection
- - `retryInterval` time in ms to wait if no docs found, default is 200ms
- - `recreate` recreate the tailable cursor on error, default is true
+ - `retryInterval` time in ms to wait if no docs are found, default is 200ms
+ - `recreate` recreate the tailable cursor when an error occurs, default is true
 
 
- **Don't remove collections with running publishers. Mongod can recreate the collection on insert automatically before mubsub will do it and without capped = true.**
+ **WARNING**: Don't remove collections with running publishers. It's possible for `mongod` to recreate the collection on the next insert (before Mubsub has the chance to do so).  If this happens the collection will be recreated as a normal, uncapped collection.
 
 ### Subscribe
 
@@ -78,32 +79,30 @@ subscription.unsubscribe();
 channel.publish(event, obj, [callback]);
 ```
 
-Publishing a document simply inserts the document into the channel's capped collection. Callback is optional.
+Publishing a document simply inserts the document into the channel's capped collection.  A callback is optional.
 
 ### Listen to events
 
-Following events will be emitted:
+The following events will be emitted:
 
 ```javascript
+// The given event was published
+channel.on('myevent', console.log);
 
-    // Subscribe to some specicific event, like channel.subscribe
-    channel.on('myevent', console.log);
+// Any event was published
+channel.on('message', console.log);
 
-    // Subscribe to a "message"
-    channel.on('message', console.log);
+// Document was inserted
+channel.on('document', console.log);
 
-    // Subscribe to "document" event to get the entire mongo document.
-    channel.on('document', console.log);
+// Mubsub is ready to receive new documents
+channel.on('ready', console.log);
 
-    // Mubsub is ready to receive new documents.
-    channel.on('ready', console.log);
+// Connection error
+client.on('error', console.log);
 
-    // Connection errors
-    client.on('error', console.log);
-
-    // Channel errors
-    channel.on('error', console.log);
-
+// Channel error
+channel.on('error', console.log);
 ```
 
 ### Close

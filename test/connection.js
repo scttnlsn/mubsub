@@ -1,38 +1,34 @@
 var assert = require('assert');
 var mubsub = require('../lib/index');
-var uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_tests';
+var helpers = require('./helpers');
 
-describe('Connection', function() {
-    function clear(done) {
-        mubsub(uri).on('connect', function(db) {
-            db.dropDatabase(done);
-        });
-    }
-    beforeEach(clear);
-    after(clear);
-
-    it('emits "error" event', function(done) {
-        mubsub('mongodb://localhost:6666/mubsub_tests').on('error', function() {
+describe('Connection', function () {
+    it('emits "error" event', function (done) {
+        mubsub('mongodb://localhost:6666/mubsub_tests').on('error', function () {
             done();
         });
     });
 
-    it('emits "connect" event', function(done) {
-        mubsub(uri).on('connect', function(db) {
+    it('emits "connect" event', function (done) {
+        this.client = mubsub(helpers.uri);
+
+        this.client.on('connect', function (db) {
             done();
         });
     });
 
-    it('states are correct', function(done) {
-        var client = mubsub(uri);
+    it('states are correct', function (done) {
+        var self = this;
+        
+        this.client = mubsub(helpers.uri);
 
-        client.on('connect', function() {
-            assert.equal(client.state, 'connected');
-            client.close();
-            assert.equal(client.state, 'destroyed');
+        this.client.on('connect', function () {
+            assert.equal(self.client.state, 'connected');
+            self.client.close();
+            assert.equal(self.client.state, 'destroyed');
             done();
         });
 
-        assert.equal(client.state, 'connecting');
+        assert.equal(self.client.state, 'connecting');
     });
 });

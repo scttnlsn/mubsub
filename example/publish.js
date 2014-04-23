@@ -6,8 +6,8 @@ var channel = client.channel('example');
 channel.on('error', console.error);
 client.on('error', console.error)
 
-setInterval(function() {
-    channel.publish('foo', { foo: 'bar', time: Date.now() }, function(err) {
+setInterval(function () {
+    channel.publish('foo', { foo: 'bar', time: Date.now() }, function (err) {
         if (err) throw err;
     });
 }, 2000);

@@ -1,136 +1,106 @@
 var assert = require('assert');
 var mubsub = require('../lib/index');
 var data = require('./fixtures/data');
-var uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/mubsub_tests';
+var helpers = require('./helpers');
 
-describe('Channel', function() {
-    var client, channel;
-
-    function clear(done) {
-        mubsub(uri).on('connect', function(db) {
-            if (client) client.close();
-            db.dropDatabase(done);
-        });
-    }
-
-    beforeEach(function(done) {
-        clear(function() {
-            client = mubsub(uri);
-            channel = client.channel('channel');
-            done();
-        });
+describe('Channel', function () {
+    beforeEach(function () {
+        this.client = mubsub(helpers.uri);
+        this.channel = this.client.channel('channel');
     });
 
-    after(clear);
-
-    it('unsubscribes properly', function(done) {
-        var amount = 0;
-
-        var subscription = channel.subscribe('a', function(data) {
-            amount++;
+    it('unsubscribes properly', function (done) {
+        var subscription = this.channel.subscribe('a', function (data) {
             assert.equal(data, 'a');
             subscription.unsubscribe();
+            done();
         });
 
-        channel.publish('a', 'a');
-        channel.publish('a', 'a');
-        channel.publish('a', 'a');
-
-        setTimeout(function() {
-            assert.equal(amount, 1);
-            done();
-        }, 500);
+        this.channel.publish('a', 'a');
+        this.channel.publish('a', 'a');
+        this.channel.publish('a', 'a');
     });
 
-    it('unsubscribes if channel is closed', function(done) {
-        var amount = 0;
+    it('unsubscribes if channel is closed', function (done) {
+        var self = this;
 
-        var subscription = channel.subscribe('a', function(data) {
+        var subscription = this.channel.subscribe('a', function (data) {
             assert.equal(data, 'a');
-            amount++;
-            channel.close();
+            self.channel.close();
+            done();
         });
 
-        channel.publish('a', 'a');
-        channel.publish('a', 'a');
-        channel.publish('a', 'a');
-        setTimeout(function() {
-            assert.equal(amount, 1);
-            done();
-        }, 500);
+        this.channel.publish('a', 'a');
+        this.channel.publish('a', 'a');
+        this.channel.publish('a', 'a');
     });
 
-    it('unsubscribes if client is closed', function(done) {
-        var amount = 0;
+    it('unsubscribes if client is closed', function (done) {
+        var self = this;
 
-        var subscription = channel.subscribe('a', function(data) {
+        var subscription = this.channel.subscribe('a', function (data) {
             assert.equal(data, 'a');
-            amount++;
-            client.close();
+            self.client.close();
+            done();
         });
 
-        channel.publish('a', 'a');
-        channel.publish('a', 'a');
-        channel.publish('a', 'a');
-        setTimeout(function() {
-            assert.equal(amount, 1);
-            done();
-        }, 500);
+        this.channel.publish('a', 'a');
+        this.channel.publish('a', 'a');
+        this.channel.publish('a', 'a');
     });
 
-    it('can subscribe and publish different data', function(done) {
+    it('can subscribe and publish different events', function (done) {
         var todo = 3;
         var subscriptions = [];
 
         function complete() {
             todo--;
+
             if (!todo) {
-                subscriptions.forEach(function(subscriptions) {
+                subscriptions.forEach(function (subscriptions) {
                     subscriptions.unsubscribe();
                 });
+
                 done();
             }
         }
 
-        subscriptions.push(channel.subscribe('a', function(data) {
+        subscriptions.push(this.channel.subscribe('a', function (data) {
             assert.equal(data, 'a');
             complete();
         }));
 
-        subscriptions.push(channel.subscribe('b', function(data) {
+        subscriptions.push(this.channel.subscribe('b', function (data) {
             assert.deepEqual(data, {b: 1});
             complete();
         }));
 
-        subscriptions.push(channel.subscribe('c', function(data) {
+        subscriptions.push(this.channel.subscribe('c', function (data) {
             assert.deepEqual(data, ['c']);
             complete();
         }));
 
-        channel.publish('a', 'a');
-        channel.publish('b', {b: 1});
-        channel.publish('c', ['c']);
+        this.channel.publish('a', 'a');
+        this.channel.publish('b', { b: 1 });
+        this.channel.publish('c', ['c']);
     });
 
-    it('gets lots of subscribed data fast enough', function(done) {
-        var channel = client.channel('channel.bench', {size: 1024 * 1024 * 100});
-        var got = 0;
-        var publish = 5000;
+    it('gets lots of subscribed data fast enough', function (done) {
+        var channel = this.client.channel('channel.bench', { size: 1024 * 1024 * 100 });
+        
+        var n = 5000;
+        var count = 0;
 
-        // Takes about 2 sec on mb air.
-        this.timeout(4000);
-
-        var subscription = channel.subscribe('a', function(_data) {
+        var subscription = channel.subscribe('a', function (_data) {
             assert.deepEqual(_data, data);
 
-            got++;
-            if (got == publish) {
+            if (++count == n) {
                 subscription.unsubscribe();
                 done();
             }
         });
 
-        for(var i = 0; i < publish; i++) {
+        for (var i = 0; i < n; i++) {
             channel.publish('a', data);
         }
     });
