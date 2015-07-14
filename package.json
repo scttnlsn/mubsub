@@ -1,27 +1,31 @@
 {
-    "name":         "mubsub",
-    "version":      "1.0.4",
-    "description":  "Pub/sub for Node.js and MongoDB",
-    "homepage":     "http://github.com/scttnlsn/mubsub",
-    "author":       "Scott Nelson <scott@scttnlsn.com>",
-    "main":         "./lib/index",
-    "keywords":     ["mongodb", "pubsub", "pub", "sub", "capped collection"],
-    "contributors": [
-        {
-            "name": "Oleg Slobodskoi",
-            "email": "oleg008@gmail.com"
-        }
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/scttnlsn/mubsub.git"
-    },
-
-    "dependencies": {
-        "mongodb": "1.4.x"
-    },
-
-    "devDependencies": {
-        "mocha": ">= 1.0.0"
+  "name": "mubsub",
+  "version": "1.0.5",
+  "description": "Pub/sub for Node.js and MongoDB",
+  "homepage": "http://github.com/scttnlsn/mubsub",
+  "author": "Scott Nelson <scott@scttnlsn.com>",
+  "main": "./lib/index",
+  "keywords": [
+    "mongodb",
+    "pubsub",
+    "pub",
+    "sub",
+    "capped collection"
+  ],
+  "contributors": [
+    {
+      "name": "Oleg Slobodskoi",
+      "email": "oleg008@gmail.com"
     }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/scttnlsn/mubsub.git"
+  },
+  "dependencies": {
+    "mongodb": "1.0.4"
+  },
+  "devDependencies": {
+    "mocha": ">= 1.0.0"
+  }
 }
