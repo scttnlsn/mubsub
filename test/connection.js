@@ -17,6 +17,7 @@ describe('Connection', function () {
         });
     });
 
+
     it('states are correct', function (done) {
         var self = this;
         
@@ -24,8 +25,10 @@ describe('Connection', function () {
 
         this.client.on('connect', function () {
             assert.equal(self.client.state, 'connected');
+            
             self.client.close();
             assert.equal(self.client.state, 'destroyed');
+
             done();
         });
 
