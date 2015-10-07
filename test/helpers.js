@@ -11,7 +11,7 @@ exports.clear = function (done) {
     });
 };
 
-beforeEach(function (done) {
+before(function (done) {
     exports.clear.call(this, done);
 });
 

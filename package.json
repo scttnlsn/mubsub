@@ -29,6 +29,10 @@
     "mocha": "^2.2.5"
   },
   "scripts": {
-    "test": "node_modules/.bin/mocha test"
+    "test": "mocha test --timeout 5000",
+    "publish": "git push origin && git push origin --tags",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
   }
 }
