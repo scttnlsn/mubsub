@@ -53,26 +53,25 @@ describe('Channel', function() {
         var self = this;
         var channel0 = this.client.channel('channel1');
 
-        channel0.subscribe('b', function(data) {
+        var subscription0 = channel0.subscribe('b', function(data) {
+            subscription0.unsubscribe();
             assert.equal(data, 'b');
+
+            // Client 0 have now published and received one event
+            // Client 1 should not receive that event but should get the second event
+            var client1 = mubsub(helpers.uri);
+            var channel1 = client1.channel('channel1');
+
+            var subscription1 = channel1.subscribe('b', function(data) {
+                subscription1.unsubscribe();
+                assert.equal(data, 'a');
+                done();
+            });
+
+            channel1.publish('b', 'a');
         });
 
         channel0.publish('b', 'b');
-
-        // Client 0 have now published one event
-        // Client 1 should not receive that event
-        var client1 = mubsub(helpers.uri);
-        
-        setTimeout(function() {          
-            var channel1 = client1.channel('channel1');
-            channel1.subscribe('b', function(data) {
-                assert.fail(data, '', 'unexpected event');
-            });
-        }, 1000);
-
-        setTimeout(function() {
-            done();
-        }, 1500);
     });
 
     it('can subscribe and publish different events', function(done) {
