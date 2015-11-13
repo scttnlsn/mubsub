@@ -74,7 +74,7 @@ describe('Channel', function () {
         channel0.publish('b', 'b');
     });
 
-    it('race condition should not', function (done) {
+    it('race condition should not occur', function (done) {
         var client0 = this.client;
         var client1 = mubsub(helpers.uri);
 
