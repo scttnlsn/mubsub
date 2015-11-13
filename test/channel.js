@@ -74,6 +74,23 @@ describe('Channel', function () {
         channel0.publish('b', 'b');
     });
 
+    it('race condition should not occur', function (done) {
+        var client0 = this.client;
+        var client1 = mubsub(helpers.uri);
+
+        client1.once('connect', function () {
+            var channel0 = client0.channel('channel2');
+            var channel1 = client1.channel('channel2');
+
+            Promise.all([
+                client0.channels.channel2.collection,
+                client1.channels.channel2.collection
+            ]).then(function () {
+                done();
+            }, done);
+        });
+    });
+
     it('can subscribe and publish different events', function (done) {
         var todo = 3;
         var subscriptions = [];
