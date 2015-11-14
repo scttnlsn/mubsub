@@ -83,8 +83,14 @@ describe('Channel', function () {
             var channel1 = client1.channel('channel2');
 
             Promise.all([
-                client0.channels.channel2.collection,
-                client1.channels.channel2.collection
+                new Promise(function (resolve, reject) {
+                    client0.channels.channel2.once('error', reject);
+                    client0.channels.channel2.once('collection', resolve);
+                }),
+                new Promise(function (resolve, reject) {
+                    client1.channels.channel2.once('error', reject);
+                    client1.channels.channel2.once('collection', resolve);
+                })
             ]).then(function () {
                 done();
             }, done);
