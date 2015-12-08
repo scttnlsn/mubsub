@@ -4,6 +4,7 @@
   "description": "Pub/sub for Node.js and MongoDB",
   "homepage": "http://github.com/scttnlsn/mubsub",
   "author": "Scott Nelson <scott@scttnlsn.com>",
+  "license": "MIT",
   "main": "./lib/index",
   "keywords": [
     "mongodb",
