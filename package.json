@@ -30,7 +30,7 @@
     "mocha": "^2.2.5"
   },
   "scripts": {
-    "test": "mocha test --timeout 5000",
+    "test": "mocha test --timeout 10000",
     "publish": "git push origin && git push origin --tags",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
