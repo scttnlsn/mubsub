@@ -3,6 +3,8 @@ node_js:
   - "0.10"
   - "0.11"
   - "0.12"
+  - "5"
+  - "4"
 script: "npm test"
 services:
   - mongodb
