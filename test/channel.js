@@ -8,6 +8,9 @@ describe('Channel', function () {
         this.client = mubsub(helpers.uri);
         this.channel = this.client.channel('channel');
     });
+    afterEach(function () {
+        this.channel.close();
+    });
 
     it('unsubscribes properly', function (done) {
         var subscription = this.channel.subscribe('a', function (data) {
@@ -65,6 +68,8 @@ describe('Channel', function () {
             var subscription1 = channel1.subscribe('b', function (data) {
                 subscription1.unsubscribe();
                 assert.equal(data, 'a');
+                channel0.close();
+                channel1.close();
                 done();
             });
 
@@ -92,6 +97,8 @@ describe('Channel', function () {
                     client1.channels.channel2.once('collection', resolve);
                 })
             ]).then(function () {
+                channel0.close();
+                channel1.close();
                 done();
             }, done);
         });
@@ -135,7 +142,7 @@ describe('Channel', function () {
 
     it('gets lots of subscribed data fast enough', function (done) {
         var channel = this.client.channel('channel.bench', { size: 1024 * 1024 * 100 });
-        
+
         var n = 5000;
         var count = 0;
 
@@ -144,6 +151,7 @@ describe('Channel', function () {
 
             if (++count == n) {
                 subscription.unsubscribe();
+                channel.close();
                 done();
             }
         });
