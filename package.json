@@ -1,8 +1,8 @@
 {
-  "name": "mubsub",
-  "version": "1.4.0",
-  "description": "Pub/sub for Node.js and MongoDB",
-  "homepage": "http://github.com/scttnlsn/mubsub",
+  "name": "mubsub-nbb",
+  "version": "1.5.0",
+  "description": "Pub/sub for Node.js and MongoDB, updated for mongodb 3.0.x by nodebb",
+  "homepage": "http://github.com/barisusakli/mubsub",
   "author": "Scott Nelson <scott@scttnlsn.com>",
   "license": "MIT",
   "main": "./lib/index",
@@ -21,7 +21,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/scttnlsn/mubsub.git"
+    "url": "git://github.com/barisusakli/mubsub.git"
   },
   "dependencies": {
     "mongodb": "^3.0.8"
